@@ -12,10 +12,10 @@ setup(
     url='https://github.com/tuxedoar/ssh-commander',
     author='tuxedoar',
     author_email='tuxedoar@gmail.com',
-    packages=['ssh-commander'],
+    packages=['ssh_commander'],
     entry_points={
         "console_scripts": [
-        "ssh-commander = ssh-commander.ssh-commander:main",
+        "ssh-commander = ssh_commander.ssh_commander:main",
         ],
     },
     install_requires=[
