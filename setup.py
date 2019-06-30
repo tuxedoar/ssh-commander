@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='ssh-commander',
-    version='0.1a',
+    version='0.1',
     description='Excecute remote commands on several hosts, with SSH',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -14,13 +14,14 @@ setup(
     author_email='tuxedoar@gmail.com',
     packages=['ssh_commander'],
     python_requires='>=3.4',
+    scripts=["ssh_commander/_version.py"],
     entry_points={
         "console_scripts": [
         "ssh-commander = ssh_commander.ssh_commander:main",
         ],
     },
     install_requires=[
-    'paramiko>=2.4.3',
+    'paramiko'
     ],
 
     classifiers=[
