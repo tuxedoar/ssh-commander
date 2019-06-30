@@ -20,7 +20,7 @@ setup(
         ],
     },
     install_requires=[
-    'paramiko>=2.4.3'
+    'paramiko>=2.4.3',
     ],
 
     classifiers=[
