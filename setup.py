@@ -13,6 +13,7 @@ setup(
     author='tuxedoar',
     author_email='tuxedoar@gmail.com',
     packages=['ssh_commander'],
+    python_requires='>=3.4',
     entry_points={
         "console_scripts": [
         "ssh-commander = ssh_commander.ssh_commander:main",
