@@ -20,6 +20,7 @@ import sys
 import re
 import getpass
 import itertools
+import logging
 from time import sleep
 from socket import error
 from _version import __version__
@@ -32,6 +33,7 @@ def main():
 
     args = menu_handler()
     cmd = args.COMMANDS
+    logging.basicConfig(level=logging.INFO)
     pw = getpass.getpass('\n Please, enter your password to access hosts: ')
     target_hosts = read_hosts_file(args.FILE)
     nworkers = len(target_hosts)
@@ -62,7 +64,7 @@ def menu_handler():
 def setup_ssh_session(user, pw, port, remote_host, commands):
     """ Setup the SSH session with necessary arguments """
     try:
-        print("\n [+] Connecting to host %s with the user %s ... \n" % (remote_host, user))
+        logging.info("[+] Connecting to host {} with the user {}".format(remote_host, user))
         my_session = paramiko.SSHClient()
         my_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         my_session.connect(remote_host, username=user, password=pw, port=port, \
@@ -73,7 +75,7 @@ def setup_ssh_session(user, pw, port, remote_host, commands):
         paramiko.ssh_exception.AuthenticationException, \
         paramiko.SSHException, \
         error) as e:
-        print("%s" %  (e))
+        logging.error("%s" %  (e))
 
 
 def exec_remote_commands(commands, remote_shell, target_host):
@@ -96,7 +98,7 @@ def exec_remote_commands(commands, remote_shell, target_host):
         if each_host_output[0] == target_host:
             hosts_cmds_output.append(each_host_output[1])
 
-    print("\n\n[*] Showing output for host {} ...\n\n".format(target_host))
+    logging.info("\n\n[*] Showing output for host {} ...\n\n".format(target_host))
     # Flatten nested lists in "hosts_cmds_output"!
     flatten_outputs=itertools.chain.from_iterable(hosts_cmds_output)
     for output in flatten_outputs:
@@ -117,12 +119,12 @@ def read_hosts_file(hosts_file):
             for line in file.readlines():
                 ip = line.strip()
                 if line and not line.startswith('#'):
-                    print("\n WARNING: The IP %s is NOT valid. Ignored!" % (ip)) \
+                    logging.warning("\t The IP %s is NOT valid. Ignored!" % (ip)) \
                     if not validate_ip_addr(ip) else remote_hosts.append(ip)
         return remote_hosts
 
     except IOError:
-        print("Can't read the specified file. Make sure it exist!.")
+        logging.critical("Can't read {} file. Make sure it exist!.".format(hosts_file))
         sys.exit(2)
 
 if __name__ == "__main__":
