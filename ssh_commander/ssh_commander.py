@@ -27,7 +27,7 @@ import paramiko
 def main():
     """ Setup CLI arguments and call rest of the functions """
     parser = argparse.ArgumentParser(
-        description='Excecute remote commands on several hosts, with SSH.')
+        description='Excecute commands on several remote hosts, with SSH.')
     parser.add_argument('FILE', help='Plain text file with list of hosts')
     parser.add_argument('USER', help='User to login on remote hosts')
     parser.add_argument('COMMANDS', help='Comma separated commands to be \
