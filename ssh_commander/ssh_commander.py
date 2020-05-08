@@ -19,29 +19,28 @@ import argparse
 import sys
 import re
 import getpass
+import itertools
 from time import sleep
 from socket import error
 from _version import __version__
 import paramiko
+import concurrent.futures
+
 
 def main():
-    """ Setup CLI arguments and call rest of the functions """
+    """ Setup CLI arguments and also multithreading  """
 
     args = menu_handler()
     cmd = args.COMMANDS
     pw = getpass.getpass('\n Please, enter your password to access hosts: ')
     target_hosts = read_hosts_file(args.FILE)
+    nworkers = len(target_hosts)
 
     # Start SSH session on each remote host.
-    for target_host in target_hosts:
-        try:
-            remote_shell = setup_ssh_session(args.USER, pw, args.port, target_host)
-            exec_remote_commands(remote_shell, cmd)
-        except (KeyboardInterrupt, \
-            paramiko.ssh_exception.AuthenticationException, \
-            paramiko.SSHException, \
-            error) as e:
-            print("%s" % (e))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
+        for target_host in target_hosts:
+            executor.submit(setup_ssh_session, args.USER,pw, args.port, target_host, cmd)
+
 
 def menu_handler():
     """ Setup CLI arguments """
@@ -60,19 +59,26 @@ def menu_handler():
     return args
 
 
-def setup_ssh_session(user, pw, port, remote_host):
+def setup_ssh_session(user, pw, port, remote_host, commands):
     """ Setup the SSH session with necessary arguments """
-    print("\n [+] Connecting to host %s with the user %s ... \n" % (remote_host, user))
-    my_session = paramiko.SSHClient()
-    my_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    my_session.connect(remote_host, username=user, password=pw, port=port, \
-                      look_for_keys=False, allow_agent=False, timeout=10)
-    remote_shell = my_session.invoke_shell()
-    return remote_shell
+    try:
+        print("\n [+] Connecting to host %s with the user %s ... \n" % (remote_host, user))
+        my_session = paramiko.SSHClient()
+        my_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        my_session.connect(remote_host, username=user, password=pw, port=port, \
+            look_for_keys=False, allow_agent=False, timeout=10)
+        remote_shell = my_session.invoke_shell()
+        exec_remote_commands(commands, remote_shell, remote_host)
+    except (KeyboardInterrupt, \
+        paramiko.ssh_exception.AuthenticationException, \
+        paramiko.SSHException, \
+        error) as e:
+        print("%s" %  (e))
 
 
-def exec_remote_commands(remote_shell, commands):
+def exec_remote_commands(commands, remote_shell, target_host):
     """ Execute provided commands on remote hosts! """
+    hosts_cmds_output = []
     remote_commands = commands.split(',')
 
     for command in remote_commands:
@@ -85,8 +91,16 @@ def exec_remote_commands(remote_shell, commands):
         output = remote_shell.recv(8000)
         # Split each line for output.
         output = output.splitlines()
-        for lines in output:
-            print(lines.decode())
+
+        each_host_output = (target_host, output)
+        if each_host_output[0] == target_host:
+            hosts_cmds_output.append(each_host_output[1])
+
+    print("\n\n[*] Showing output for host {} ...\n\n".format(target_host))
+    # Flatten nested lists in "hosts_cmds_output"!
+    flatten_outputs=itertools.chain.from_iterable(hosts_cmds_output)
+    for output in flatten_outputs:
+        print(output.decode())
 
 
 def validate_ip_addr(ip_addr):
