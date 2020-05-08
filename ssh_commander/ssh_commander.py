@@ -1,4 +1,4 @@
-# Copyright 2019 by Tuxedoar <tuxedoar@gmail.com>
+# Copyright 2020 by Tuxedoar <tuxedoar@gmail.com>
 
 # LICENSE
 
@@ -32,18 +32,15 @@ def main():
     parser.add_argument('USER', help='User to login on remote hosts')
     parser.add_argument('COMMANDS', help='Comma separated commands to be \
                          executed on remote hosts')
-    parser.add_argument('-p', '--port', required=False, action='store',
-                        help='Specify SSH port to connect to hosts')
+    parser.add_argument('-p', '--port', nargs='?', type=int,
+                        default=22, help='Specify SSH port to connect to hosts')
     parser.add_argument('-v', '--version', action='version',
                         version="%(prog)s {version}".format(version=__version__),
                         help='Show current version')
     args = parser.parse_args()
 
     cmd = args.COMMANDS
-    SSH_PORT = 22
 
-    if args.port:
-        SSH_PORT = args.port
     pw = getpass.getpass('\n Please, enter your password to access hosts: ')
     target_hosts = read_hosts_file(args.FILE)
 
