@@ -24,6 +24,8 @@ import logging
 from time import sleep
 from socket import error
 from _version import __version__
+from colorama import init, Fore
+import coloredlogs
 import paramiko
 import concurrent.futures
 
@@ -31,9 +33,11 @@ import concurrent.futures
 def main():
     """ Setup CLI arguments and also multithreading  """
 
+    coloredlogs.install(level='INFO', fmt='[%(hostname)s] %(asctime)s %(message)s')
+    init(autoreset=True)
+
     args = menu_handler()
     cmd = args.COMMANDS
-    logging.basicConfig(level=logging.INFO)
     pw = getpass.getpass('\n Please, enter your password to access hosts: ')
     target_hosts = read_hosts_file(args.FILE)
     nworkers = len(target_hosts)
@@ -98,7 +102,7 @@ def exec_remote_commands(commands, remote_shell, target_host):
         if each_host_output[0] == target_host:
             hosts_cmds_output.append(each_host_output[1])
 
-    logging.info("\n\n[*] Showing output for host {} ...\n\n".format(target_host))
+    logging.info(Fore.CYAN + "\n\n[*] Showing output for host {} ...\n\n".format(target_host))
     # Flatten nested lists in "hosts_cmds_output"!
     flatten_outputs=itertools.chain.from_iterable(hosts_cmds_output)
     for output in flatten_outputs:
@@ -119,12 +123,12 @@ def read_hosts_file(hosts_file):
             for line in file.readlines():
                 ip = line.strip()
                 if line and not line.startswith('#'):
-                    logging.warning("\t The IP %s is NOT valid. Ignored!" % (ip)) \
+                    logging.warning("[!] The IP %s is NOT valid. Ignored!" % (ip)) \
                     if not validate_ip_addr(ip) else remote_hosts.append(ip)
         return remote_hosts
 
     except IOError:
-        logging.critical("Can't read {} file. Make sure it exist!.".format(hosts_file))
+        logging.critical("[!!] Can't read {} file. Make sure it exist!.".format(hosts_file))
         sys.exit(2)
 
 if __name__ == "__main__":
