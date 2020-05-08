@@ -26,21 +26,9 @@ import paramiko
 
 def main():
     """ Setup CLI arguments and call rest of the functions """
-    parser = argparse.ArgumentParser(
-        description='Excecute commands on several remote hosts, with SSH.')
-    parser.add_argument('FILE', help='Plain text file with list of hosts')
-    parser.add_argument('USER', help='User to login on remote hosts')
-    parser.add_argument('COMMANDS', help='Comma separated commands to be \
-                         executed on remote hosts')
-    parser.add_argument('-p', '--port', nargs='?', type=int,
-                        default=22, help='Specify SSH port to connect to hosts')
-    parser.add_argument('-v', '--version', action='version',
-                        version="%(prog)s {version}".format(version=__version__),
-                        help='Show current version')
-    args = parser.parse_args()
 
+    args = menu_handler()
     cmd = args.COMMANDS
-
     pw = getpass.getpass('\n Please, enter your password to access hosts: ')
     target_hosts = read_hosts_file(args.FILE)
 
@@ -54,6 +42,22 @@ def main():
             paramiko.SSHException, \
             error) as e:
             print("%s" % (e))
+
+def menu_handler():
+    """ Setup CLI arguments """
+    parser = argparse.ArgumentParser(
+        description='Excecute commands on several remote hosts, with SSH.')
+    parser.add_argument('FILE', help='Plain text file with list of hosts')
+    parser.add_argument('USER', help='User to login on remote hosts')
+    parser.add_argument('COMMANDS', help='Comma separated commands to be \
+                         executed on remote hosts')
+    parser.add_argument('-p', '--port', nargs='?', type=int,
+                        default=22, help='Specify SSH port to connect to hosts')
+    parser.add_argument('-v', '--version', action='version',
+                        version="%(prog)s {version}".format(version=__version__),
+                        help='Show current version')
+    args = parser.parse_args()
+    return args
 
 
 def setup_ssh_session(user, pw, port, remote_host):
