@@ -35,7 +35,7 @@ def main():
     # Start SSH session on each remote host.
     for target_host in target_hosts:
         try:
-            remote_shell = setup_ssh_session(args.USER, pw, SSH_PORT, target_host)
+            remote_shell = setup_ssh_session(args.USER, pw, args.port, target_host)
             exec_remote_commands(remote_shell, cmd)
         except (KeyboardInterrupt, \
             paramiko.ssh_exception.AuthenticationException, \
