@@ -7,10 +7,18 @@ You simply specify a plain text file with a list of remote hosts to connect to (
 or IP addresses), and a comma-separated list of commands to execute on those. Note that
 access credentials (user and password) must be the same for all the target hosts!.
 
+## Highlights and features
+* Multithreaded since version `0.2`!.
+* Almost no setup required, after installed!.
+* Easy to use CLI syntax.
+* Colorized output (since `v0.2`)!.
+
 ## Requirements
 Make sure your system meets the following requirements:
-* [Python 3](https://www.python.org/downloads/) (>= 3.4)
-* [paramiko](https://github.com/paramiko/paramiko) (tested with v2.6.0)
+* [Python 3](https://www.python.org/downloads/) (>= 3.6)
+* [paramiko](https://github.com/paramiko/paramiko) (tested with v2.7.1)
+* [colorama](https://github.com/tartley/colorama) (tested with v0.4.3)
+* [coloredlogs](https://pypi.org/project/coloredlogs/) (tested with v14.0)
 
 ## Installation
 The recommended method for installing this tool, is using `pip`:
@@ -24,7 +32,7 @@ When using `ssh-commander`, respect the following syntax:
 Execute remote commands on several hosts, with SSH.
 usage: ssh-commander [-h] [-p PORT] [-v] FILE USER COMMANDS
 
-Excecute remote commands on several hosts, with SSH.
+Excecute commands on several remote hosts, with SSH.
 
 positional arguments:
   FILE                  Plain text file with list of hosts
@@ -57,3 +65,6 @@ They could rather be some GNU/Linux servers, as well:
 ```
 ssh-commander hosts.txt foones "hostname, whoami"
 ```
+
+## License
+This program is licensed under the GPLv3.
