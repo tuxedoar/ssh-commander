@@ -21,14 +21,13 @@ import re
 import getpass
 import itertools
 import logging
-from time import sleep
+import concurrent.futures
 from socket import error
-from _version import __version__
-from colorama import init, Fore
+from time import sleep
 import coloredlogs
 import paramiko
-import concurrent.futures
-
+from colorama import init, Fore
+from _version import __version__
 
 def main():
     """ Setup CLI arguments and also multithreading  """
@@ -45,7 +44,7 @@ def main():
     # Start SSH session on each remote host.
     with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
         for target_host in target_hosts:
-            executor.submit(setup_ssh_session, args.USER,pw, args.port, target_host, cmd)
+            executor.submit(setup_ssh_session, args.USER, pw, args.port, target_host, cmd)
 
 
 def menu_handler():
@@ -68,7 +67,7 @@ def menu_handler():
 def setup_ssh_session(user, pw, port, remote_host, commands):
     """ Setup the SSH session with necessary arguments """
     try:
-        logging.info("[+] Connecting to host {} with the user {}".format(remote_host, user))
+        logging.info("[+] Connecting to host %s with the user %s", remote_host, user)
         my_session = paramiko.SSHClient()
         my_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         my_session.connect(remote_host, username=user, password=pw, port=port, \
@@ -79,7 +78,7 @@ def setup_ssh_session(user, pw, port, remote_host, commands):
         paramiko.ssh_exception.AuthenticationException, \
         paramiko.SSHException, \
         error) as e:
-        logging.error("%s" %  (e))
+        logging.error("%s", e)
 
 
 def exec_remote_commands(commands, remote_shell, target_host):
@@ -101,8 +100,8 @@ def exec_remote_commands(commands, remote_shell, target_host):
         hosts_cmds_output.append(output)
 
     # Flatten nested lists in "hosts_cmds_output"!
-    flatten_outputs=itertools.chain.from_iterable(hosts_cmds_output)
-    logging.info(Fore.CYAN + "[*] Showing output for host {} ...\n".format(target_host))
+    flatten_outputs = itertools.chain.from_iterable(hosts_cmds_output)
+    logging.info(Fore.CYAN + "[*] Showing output for host %s ...\n", target_host)
     for output in flatten_outputs:
         print(output.decode())
 
@@ -121,12 +120,12 @@ def read_hosts_file(hosts_file):
             for line in file.readlines():
                 ip = line.strip()
                 if line and not line.startswith('#'):
-                    logging.warning("The IP %s is NOT valid. Ignored!" % (ip)) \
+                    logging.warning("The IP %s is NOT valid. Ignored!", ip) \
                     if not validate_ip_addr(ip) else remote_hosts.append(ip)
         return remote_hosts
 
     except IOError:
-        logging.critical("Can't read {} file. Make sure it exist!.".format(hosts_file))
+        logging.critical("Can't read %s file. Make sure it exist!.", hosts_file)
         sys.exit(2)
 
 if __name__ == "__main__":
