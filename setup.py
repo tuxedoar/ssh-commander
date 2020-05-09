@@ -21,7 +21,9 @@ setup(
         ],
     },
     install_requires=[
-    'paramiko'
+    'paramiko',
+    'colorama',
+    'coloredlogs'
     ],
 
     classifiers=[
