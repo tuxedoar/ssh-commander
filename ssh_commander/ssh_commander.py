@@ -32,7 +32,7 @@ import concurrent.futures
 
 def main():
     """ Setup CLI arguments and also multithreading  """
-
+    # Setup colorful output
     coloredlogs.install(level='INFO', fmt='[%(hostname)s] %(asctime)s %(message)s')
     init(autoreset=True)
 
@@ -97,14 +97,12 @@ def exec_remote_commands(commands, remote_shell, target_host):
         output = remote_shell.recv(8000)
         # Split each line for output.
         output = output.splitlines()
+        # Store each remote host output!
+        hosts_cmds_output.append(output)
 
-        each_host_output = (target_host, output)
-        if each_host_output[0] == target_host:
-            hosts_cmds_output.append(each_host_output[1])
-
-    logging.info(Fore.CYAN + "\n\n[*] Showing output for host {} ...\n\n".format(target_host))
     # Flatten nested lists in "hosts_cmds_output"!
     flatten_outputs=itertools.chain.from_iterable(hosts_cmds_output)
+    logging.info(Fore.CYAN + "[*] Showing output for host {} ...\n".format(target_host))
     for output in flatten_outputs:
         print(output.decode())
 
@@ -123,12 +121,12 @@ def read_hosts_file(hosts_file):
             for line in file.readlines():
                 ip = line.strip()
                 if line and not line.startswith('#'):
-                    logging.warning("[!] The IP %s is NOT valid. Ignored!" % (ip)) \
+                    logging.warning("The IP %s is NOT valid. Ignored!" % (ip)) \
                     if not validate_ip_addr(ip) else remote_hosts.append(ip)
         return remote_hosts
 
     except IOError:
-        logging.critical("[!!] Can't read {} file. Make sure it exist!.".format(hosts_file))
+        logging.critical("Can't read {} file. Make sure it exist!.".format(hosts_file))
         sys.exit(2)
 
 if __name__ == "__main__":
