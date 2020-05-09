@@ -29,8 +29,7 @@ pip install ssh-commander
 ## Usage
 When using `ssh-commander`, respect the following syntax:
 ```
-Execute remote commands on several hosts, with SSH.
-usage: ssh-commander [-h] [-p PORT] [-v] FILE USER COMMANDS
+usage: ssh-commander [-h] [-p [PORT]] [-v] FILE USER COMMANDS
 
 Excecute commands on several remote hosts, with SSH.
 
@@ -42,7 +41,8 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -p PORT, --port PORT  Specify SSH port to connect to hosts
+  -p [PORT], --port [PORT]
+                        Specify SSH port to connect to hosts
   -v, --version         Show current version
 ```
 First, remember to create a text file (name it whatever you like), where you
