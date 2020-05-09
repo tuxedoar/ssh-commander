@@ -41,7 +41,7 @@ def main():
     target_hosts = read_hosts_file(args.FILE)
     nworkers = len(target_hosts)
 
-    # Start SSH session on each remote host.
+    # Start multithreaded SSH sessions on remote hosts!.
     with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
         for target_host in target_hosts:
             executor.submit(setup_ssh_session, args.USER, pw, args.port, target_host, cmd)
