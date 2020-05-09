@@ -1,5 +1,5 @@
 # SSH Commander
-This command line tool, allows you to execute various commands on several remote hosts,
+This *Command Line Tool* (CLI), allows you to execute various commands on several remote hosts,
 using the SSH protocol. As a result, you get a per-host generated output of each
 command you specified.
 
