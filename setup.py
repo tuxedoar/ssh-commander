@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='ssh-commander',
     version='0.2',
-    description='Excecute remote commands on several hosts, with SSH',
+    description='Excecute commands on several remote hosts, with SSH',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/tuxedoar/ssh-commander',
