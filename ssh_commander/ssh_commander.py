@@ -123,7 +123,6 @@ def read_hosts_file(hosts_file):
                     logging.warning("The IP %s is NOT valid. Ignored!", ip) \
                     if not validate_ip_addr(ip) else remote_hosts.append(ip)
         return remote_hosts
-
     except IOError:
         logging.critical("Can't read %s file. Make sure it exist!.", hosts_file)
         sys.exit(2)
