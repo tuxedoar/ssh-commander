@@ -34,12 +34,15 @@ def main():
     # Setup colorful output
     coloredlogs.install(level='INFO', fmt='[%(hostname)s] %(asctime)s %(message)s')
     init(autoreset=True)
-
     args = menu_handler()
-    cmd = args.COMMANDS
-    pw = getpass.getpass('\n Please, enter your password to access hosts: ')
     target_hosts = read_hosts_file(args.FILE)
     nworkers = len(target_hosts)
+    cmd = args.COMMANDS
+    ssh_key_file = args.identity_file if args.identity_file else None
+    pw = None
+    if ssh_key_file is None:
+        pw = getpass.getpass('\n Please, enter your password to access hosts: ')
+    ssh_session_args = (args.USER, pw, args.port, ssh_key_file)
 
     # Start multithreaded SSH sessions on remote hosts!.
     with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
@@ -57,6 +60,7 @@ def menu_handler():
                          executed on remote hosts')
     parser.add_argument('-p', '--port', nargs='?', type=int,
                         default=22, help='Specify SSH port to connect to hosts')
+    parser.add_argument('-i','--identity_file', help="Public key auth file")
     parser.add_argument('-v', '--version', action='version',
                         version="%(prog)s {version}".format(version=__version__),
                         help='Show current version')
