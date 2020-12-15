@@ -47,7 +47,7 @@ def main():
     # Start multithreaded SSH sessions on remote hosts!.
     with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
         for target_host in target_hosts:
-            executor.submit(setup_ssh_session, args.USER, pw, args.port, target_host, cmd)
+            executor.submit(manage_ssh_session, ssh_session_args, target_host, cmd)
 
 
 def menu_handler():
@@ -68,21 +68,40 @@ def menu_handler():
     return args
 
 
-def setup_ssh_session(user, pw, port, remote_host, commands):
-    """ Setup the SSH session with necessary arguments """
+def start_ssh_session(ssh_session, remote_host, session_args):
+    """ Initialize SSH session with remote host """
+    user, pw, port, ssh_key_file = session_args[0], \
+                                    session_args[1], \
+                                    session_args[2], \
+                                    session_args[3]
+    # Try key based auth first. At failure, try password based auth.
     try:
         logging.info("[+] Connecting to host %s with the user %s", remote_host, user)
-        my_session = paramiko.SSHClient()
-        my_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        my_session.connect(remote_host, username=user, password=pw, port=port, \
-            look_for_keys=False, allow_agent=False, timeout=10)
-        remote_shell = my_session.invoke_shell()
-        exec_remote_commands(commands, remote_shell, remote_host)
-    except (KeyboardInterrupt, \
-        paramiko.ssh_exception.AuthenticationException, \
-        paramiko.SSHException, \
-        error) as e:
-        logging.error("%s", e)
+        ssh_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh_session.connect(remote_host, username=user, port=port, timeout=10, \
+                            key_filename=ssh_key_file)
+        #logging.info("Authentication failed for host %s: %s", remote_host)
+
+    except (
+            paramiko.ssh_exception.AuthenticationException,
+            paramiko.SSHException,
+            IOError,
+            error
+            ) as e:
+                logging.critical("Failed to connect to host %s: %s",
+                                    remote_host, e)
+                ssh_session.connect(remote_host, username=user, password=pw, port=port, \
+                                    look_for_keys=False, allow_agent=False, timeout=10)
+    return ssh_session
+
+
+def manage_ssh_session(session_args, remote_host, commands):
+    """ Setup the SSH session and exec commands at remote hosts """
+    with paramiko.SSHClient() as my_session:
+        ssh_session = start_ssh_session(my_session, remote_host, session_args)
+        remote_shell = ssh_session.invoke_shell()
+        hosts_output = exec_remote_commands(commands, remote_shell)
+        show_hosts_output(hosts_output, remote_host)
 
 
 def exec_remote_commands(commands, remote_shell, target_host):
