@@ -153,17 +153,13 @@ def validate_ip_addr(ip_addr):
 def read_hosts_file(hosts_file):
     """ Read the file and get the IP adresses  """
     remote_hosts = []
-    try:
-        with open(hosts_file, 'r') as file:
-            for line in file.readlines():
-                ip = line.strip()
-                if line and not line.startswith('#'):
-                    logging.warning("The IP %s is NOT valid. Ignored!", ip) \
-                    if not validate_ip_addr(ip) else remote_hosts.append(ip)
-        return remote_hosts
-    except IOError:
-        logging.critical("Can't read %s file. Make sure it exist!.", hosts_file)
-        sys.exit(2)
+    with open(hosts_file, 'r') as file:
+        for line in file.readlines():
+            ip = line.strip()
+            if line and not line.startswith('#'):
+                logging.warning("The IP %s is NOT valid. Ignored!", ip) \
+                if not validate_ip_addr(ip) else remote_hosts.append(ip)
+    return remote_hosts
 
 if __name__ == "__main__":
     main()
