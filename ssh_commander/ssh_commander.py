@@ -104,7 +104,7 @@ def manage_ssh_session(session_args, remote_host, commands):
         show_hosts_output(hosts_output, remote_host)
 
 
-def exec_remote_commands(commands, remote_shell, target_host):
+def exec_remote_commands(commands, remote_shell):
     """ Execute provided commands on remote hosts! """
     hosts_cmds_output = []
     remote_commands = commands.split(',')
@@ -123,10 +123,9 @@ def exec_remote_commands(commands, remote_shell, target_host):
         hosts_cmds_output.append(output)
 
     # Flatten nested lists in "hosts_cmds_output"!
-    flatten_outputs = itertools.chain.from_iterable(hosts_cmds_output)
-    logging.info(Fore.CYAN + "[*] Showing output for host %s ...\n", target_host)
-    for output in flatten_outputs:
-        print(output.decode())
+    flatten_hosts_output = itertools.chain.from_iterable(hosts_cmds_output)
+
+    return flatten_hosts_output
 
 
 def validate_ip_addr(ip_addr):
