@@ -137,6 +137,13 @@ def exec_remote_commands(commands, remote_shell):
     return flatten_hosts_output
 
 
+def show_hosts_output(hosts_output, target_host):
+    """ Show output results for each target host """
+    logging.info(Fore.CYAN + "[*] Showing output for host %s ...\n", target_host)
+    for output in hosts_output:
+        print(output.decode())
+
+
 def validate_ip_addr(ip_addr):
     """ Validate an IP address """
     validate_ip = re.search("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", ip_addr)
