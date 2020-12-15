@@ -30,24 +30,33 @@ from colorama import init, Fore
 from _version import __version__
 
 def main():
-    """ Setup CLI arguments and also multithreading  """
-    # Setup colorful output
-    coloredlogs.install(level='INFO', fmt='[%(hostname)s] %(asctime)s %(message)s')
-    init(autoreset=True)
-    args = menu_handler()
-    target_hosts = read_hosts_file(args.FILE)
-    nworkers = len(target_hosts)
-    cmd = args.COMMANDS
-    ssh_key_file = args.identity_file if args.identity_file else None
-    pw = None
-    if ssh_key_file is None:
-        pw = getpass.getpass('\n Please, enter your password to access hosts: ')
-    ssh_session_args = (args.USER, pw, args.port, ssh_key_file)
+    """ Setup CLI arguments and multithreading  """
+    try:
+        # Setup colorful output
+        coloredlogs.install(level='INFO', fmt='[%(hostname)s] %(asctime)s %(message)s')
+        init(autoreset=True)
+        args = menu_handler()
+        target_hosts = read_hosts_file(args.FILE)
+        nworkers = len(target_hosts)
+        cmd = args.COMMANDS
+        ssh_key_file = args.identity_file if args.identity_file else None
+        pw = None
+        if ssh_key_file is None:
+            pw = getpass.getpass('\n Please, enter your password to access hosts: ')
+        ssh_session_args = (args.USER, pw, args.port, ssh_key_file)
+    except (KeyboardInterrupt, IOError) as err:
+        logging.critical("%s\n", err)
+        sys.exit()
 
     # Start multithreaded SSH sessions on remote hosts!.
     with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
         for target_host in target_hosts:
-            executor.submit(manage_ssh_session, ssh_session_args, target_host, cmd)
+            executor.submit(
+                            manage_ssh_session,
+                            ssh_session_args,
+                            target_host,
+                            cmd
+                            )
 
 
 def menu_handler():
