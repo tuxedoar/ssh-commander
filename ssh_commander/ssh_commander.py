@@ -37,6 +37,9 @@ def main():
         init(autoreset=True)
         args = menu_handler()
         target_hosts = read_hosts_file(args.FILE)
+        if not target_hosts:
+            logging.critical("No valid hosts were found. Nothing to do!")
+            sys.exit(1)
         nworkers = len(target_hosts)
         cmd = args.COMMANDS
         ssh_key_file = args.identity_file if args.identity_file else None
