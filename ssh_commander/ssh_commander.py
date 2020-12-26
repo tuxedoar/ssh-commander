@@ -15,21 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from ssh_key_helper import get_ssh_homedir_content
+from ssh_key_helper import check_ssh_keys_exist
+from ssh_key_helper import should_ask_password
 import argparse
 import sys
 import re
-import os
 import getpass
 import itertools
 import logging
 import concurrent.futures
 from socket import error
 from time import sleep
-from pathlib import Path
 import coloredlogs
 import paramiko
 from colorama import init, Fore
 from _version import __version__
+
+should_ask_password
 
 def main():
     """ Setup CLI arguments and multithreading  """
@@ -65,14 +68,7 @@ def start_multithreaded_sessions(nworkers, target_hosts, ssh_session_args, cmd):
                             )
     return None
 
-def should_ask_password(ssh_key_file):
-    """ Decide whether to ask for password or not  """
-    ask_for_password = False
-    # Check for SSH keys at default location at $HOME/.ssh/
-    check_home_ssh_keys = check_ssh_keys_exist()
-    if ssh_key_file is None and check_home_ssh_keys is not True:
-         ask_for_password = True
-    return ask_for_password
+
 
 
 def setup_ssh_session_args(args):
@@ -95,27 +91,6 @@ def setup_ssh_session_args(args):
                         check_home_ssh_keys
                         )
     return ssh_session_args
-
-
-def get_ssh_homedir_content():
-    """ Get the content of $HOME/.ssh/ dir"""
-    ssh_homedir_content = False
-    home_dir = Path.home()
-    ssh_config_dir = Path(".ssh/")
-    ssh_keys_default_dir = Path(home_dir, ssh_config_dir)
-    if ssh_keys_default_dir.exists() and ssh_keys_default_dir.is_dir():
-        ssh_homedir_content = os.listdir(ssh_keys_default_dir)
-    return ssh_homedir_content
-
-
-def check_ssh_keys_exist():
-    """ Check if a default SSH key exist """
-    check = None
-    target_ssh_key_files = ("id_dsa", "id_ecdsa", "id_ed25519", "id_rsa")
-    ssh_homedir = get_ssh_homedir_content() if get_ssh_homedir_content() is not False else None
-    # Is there SSH key file in $HOME/.ssh? Compare both lists.
-    check = any(item in target_ssh_key_files for item in ssh_homedir)
-    return check
 
 
 def menu_handler():
