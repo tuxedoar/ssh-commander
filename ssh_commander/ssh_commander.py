@@ -42,11 +42,7 @@ def main():
             sys.exit(1)
         nworkers = len(target_hosts)
         cmd = args.COMMANDS
-        ssh_key_file = args.identity_file if args.identity_file else None
-        pw = None
-        if ssh_key_file is None:
-            pw = getpass.getpass('\n Please, enter your password to access hosts: ')
-        ssh_session_args = (args.USER, pw, args.port, ssh_key_file)
+        ssh_session_args = setup_ssh_session_args(args)
     except (KeyboardInterrupt, IOError) as err:
         logging.critical("%s\n", err)
         sys.exit()
