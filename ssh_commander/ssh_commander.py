@@ -62,6 +62,16 @@ def main():
                             )
 
 
+def check_ssh_keys_exist():
+    """ Check if a default SSH key exist """
+    check = None
+    target_ssh_key_files = ("id_dsa", "id_ecdsa", "id_ed25519", "id_rsa")
+    ssh_homedir = get_ssh_homedir_content() if get_ssh_homedir_content() is not False else None
+    # Is there SSH key file in $HOME/.ssh? Compare both lists.
+    check = any(item in target_ssh_key_files for item in ssh_homedir)
+    return check
+
+
 def menu_handler():
     """ Setup CLI arguments """
     parser = argparse.ArgumentParser(
