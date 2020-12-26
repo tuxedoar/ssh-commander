@@ -62,6 +62,16 @@ def main():
                             )
 
 
+def should_ask_password(ssh_key_file):
+    """ Decide whether to ask for password or not  """
+    ask_for_password = False
+    # Check for SSH keys at default location at $HOME/.ssh/
+    check_home_ssh_keys = check_ssh_keys_exist()
+    if ssh_key_file is None and check_home_ssh_keys is not True:
+         ask_for_password = True
+    return ask_for_password
+
+
 def check_ssh_keys_exist():
     """ Check if a default SSH key exist """
     check = None
