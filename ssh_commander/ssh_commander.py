@@ -72,6 +72,28 @@ def should_ask_password(ssh_key_file):
     return ask_for_password
 
 
+def setup_ssh_session_args(args):
+    """ Setup needed SSH session arguments """
+    check_home_ssh_keys = check_ssh_keys_exist()
+    ssh_key_file = args.identity_file if args.identity_file else None
+    pw = None
+    ask_for_password = should_ask_password(ssh_key_file)
+    if ask_for_password:
+        logging.info("[+] No SSH key was found nor specified . " \
+                         "Won't try key based authentication!")
+        pw = getpass.getpass('\n Please, enter your password to access hosts: ')
+    else:
+        logging.info("[+] Trying key based authentication!")
+    ssh_session_args = (
+                        args.USER, \
+                        pw, \
+                        args.port, \
+                        ssh_key_file, \
+                        check_home_ssh_keys
+                        )
+    return ssh_session_args
+
+
 def check_ssh_keys_exist():
     """ Check if a default SSH key exist """
     check = None
