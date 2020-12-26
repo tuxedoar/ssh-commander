@@ -18,12 +18,14 @@
 import argparse
 import sys
 import re
+import os
 import getpass
 import itertools
 import logging
 import concurrent.futures
 from socket import error
 from time import sleep
+from pathlib import Path
 import coloredlogs
 import paramiko
 from colorama import init, Fore
@@ -136,18 +138,25 @@ def menu_handler():
 
 def start_ssh_session(ssh_session, remote_host, session_args):
     """ Initialize SSH session with remote host """
-    user, pw, port, ssh_key_file = session_args[0], \
+    user, pw, port, ssh_key_file, check_home_ssh_keys = \
+                                    session_args[0], \
                                     session_args[1], \
                                     session_args[2], \
-                                    session_args[3]
-    # Try key based auth first. At failure, try password based auth.
-    try:
-        logging.info("[+] Connecting to host %s with the user %s", remote_host, user)
-        ssh_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh_session.connect(remote_host, username=user, port=port, timeout=10, \
-                            key_filename=ssh_key_file)
-        #logging.info("Authentication failed for host %s: %s", remote_host)
+                                    session_args[3], \
+                                    session_args[4]
 
+    try:
+        ssh_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        if ssh_key_file is None and check_home_ssh_keys is not True:
+            # Try password based auth!
+            logging.info("[+] Trying password based auth for host: %s", remote_host)
+            ssh_session.connect(remote_host, username=user, password=pw, port=port, \
+                                look_for_keys=False, allow_agent=False, timeout=10)
+        else:
+            # Try key based auth
+            logging.info("[+] Trying key based auth for host: %s", remote_host)
+            ssh_session.connect(remote_host, username=user, port=port, timeout=10, \
+                                key_filename=ssh_key_file)
     except (
             paramiko.ssh_exception.AuthenticationException,
             paramiko.SSHException,
@@ -156,8 +165,7 @@ def start_ssh_session(ssh_session, remote_host, session_args):
             ) as e:
                 logging.critical("Failed to connect to host %s: %s",
                                     remote_host, e)
-                ssh_session.connect(remote_host, username=user, password=pw, port=port, \
-                                    look_for_keys=False, allow_agent=False, timeout=10)
+                sys.exit(1)
     return ssh_session
 
 
