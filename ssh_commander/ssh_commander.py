@@ -95,6 +95,17 @@ def setup_ssh_session_args(args):
     return ssh_session_args
 
 
+def get_ssh_homedir_content():
+    """ Get the content of $HOME/.ssh/ dir"""
+    ssh_homedir_content = False
+    home_dir = Path.home()
+    ssh_config_dir = Path(".ssh/")
+    ssh_keys_default_dir = Path(home_dir, ssh_config_dir)
+    if ssh_keys_default_dir.exists() and ssh_keys_default_dir.is_dir():
+        ssh_homedir_content = os.listdir(ssh_keys_default_dir)
+    return ssh_homedir_content
+
+
 def check_ssh_keys_exist():
     """ Check if a default SSH key exist """
     check = None
