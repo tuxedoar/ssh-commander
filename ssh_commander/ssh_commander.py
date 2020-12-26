@@ -32,7 +32,6 @@ import paramiko
 from colorama import init, Fore
 from _version import __version__
 
-should_ask_password
 
 def main():
     """ Setup CLI arguments and multithreading  """
