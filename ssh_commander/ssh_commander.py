@@ -47,7 +47,12 @@ def main():
         logging.critical("%s\n", err)
         sys.exit()
 
-    # Start multithreaded SSH sessions on remote hosts!.
+    logging.info("[+] Setting up remote sessions with user: %s", args.USER)
+    start_multithreaded_sessions(nworkers, target_hosts, ssh_session_args, cmd)
+
+
+def start_multithreaded_sessions(nworkers, target_hosts, ssh_session_args, cmd):
+    """ Start multithreaded SSH sessions on remote hosts """
     with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
         for target_host in target_hosts:
             executor.submit(
@@ -56,7 +61,7 @@ def main():
                             target_host,
                             cmd
                             )
-
+    return None
 
 def should_ask_password(ssh_key_file):
     """ Decide whether to ask for password or not  """
