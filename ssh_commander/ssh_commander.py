@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from ssh_key_helper import get_ssh_homedir_content
 from ssh_session import setup_ssh_session_args
-from ssh_session import start_ssh_session
 from ssh_session import manage_ssh_session
 import argparse
 import sys
