@@ -39,6 +39,19 @@ def main():
         if not target_hosts:
             logging.critical("No valid hosts were found. Nothing to do!")
             sys.exit(1)
+        trust_unknown_hosts = args.trust_unknown
+        # Check for unknown hosts only IF '-T' argument is NOT present!
+        if not args.trust_unknown:
+            trust_unknown_hosts = check_for_unknown_hosts(target_hosts)
+        # Match args.trust_unknown and trust_unknown_hosts bool values, only if
+        # the user decided to trust previously found unknown hosts. This means
+        # that default value for args.trust_unknown changes from False to True.
+        args.trust_unknown = trust_unknown_hosts if trust_unknown_hosts \
+        != False else args.trust_unknown
+        if trust_unknown_hosts is False:
+            logging.critical("\nSorry, won't continue with untrusted remote" \
+            " hosts!\n")
+            sys.exit(1)
         nworkers = len(target_hosts)
         cmd = args.COMMANDS
         ssh_session_args = setup_ssh_session_args(args)
@@ -74,6 +87,8 @@ def menu_handler():
     parser.add_argument('-p', '--port', nargs='?', type=int,
                         default=22, help='Specify SSH port to connect to hosts')
     parser.add_argument('-i','--identity_file', help="Public key auth file")
+    parser.add_argument('-T', '--trust_unknown', action='store_true', \
+                        help="Trust hosts with missing local keys")
     parser.add_argument('-v', '--version', action='version',
                         version="%(prog)s {version}".format(version=__version__),
                         help='Show current version')
