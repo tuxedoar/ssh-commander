@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from ssh_session import get_unknown_hosts
 from ssh_session import setup_ssh_session_args
 from ssh_session import manage_ssh_session
 import argparse
@@ -78,6 +79,22 @@ def menu_handler():
                         help='Show current version')
     args = parser.parse_args()
     return args
+
+
+def check_for_unknown_hosts(target_hosts):
+    """ Find missing hosts in known_hosts and ask user if they should be
+    trusted """
+    trust_unknown_hosts = False
+    unknown_hosts = get_unknown_hosts(target_hosts)
+    if unknown_hosts:
+        logging.warning("The following unknown hosts were found:\n %s", unknown_hosts)
+        ask_untrusted_hosts = str(input("Do you trust these hosts? (Y/n)"))
+        while ask_untrusted_hosts not in ('Y', 'n'):
+            ask_untrusted_hosts = str(input("Invalid answer. Please confirm with [Y/n]"))
+        trust_unknown_hosts = True if ask_untrusted_hosts == 'Y' else False
+    else:
+        trust_unknown_hosts = True
+    return trust_unknown_hosts
 
 
 def validate_ip_addr(ip_addr):
