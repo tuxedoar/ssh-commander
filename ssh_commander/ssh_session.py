@@ -48,6 +48,17 @@ def is_host_unknown(ssh_session, remote_host):
     return is_host_unknown
 
 
+def get_unknown_hosts(hosts):
+    """ Setup and return a list of unknown hosts """
+    unknown_hosts = []
+    with paramiko.SSHClient() as dummy_session:
+        for each_host in hosts:
+            host_unknown = is_host_unknown(dummy_session, each_host)
+            if host_unknown:
+                unknown_hosts.append(each_host)
+    return unknown_hosts
+
+
 def start_ssh_session(ssh_session, remote_host, session_args):
     """ Initialize SSH session with remote host """
     user, pw, port, ssh_key_file, check_home_ssh_keys = \
