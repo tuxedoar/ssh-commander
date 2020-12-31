@@ -3,6 +3,7 @@
 from ssh_key_helper import check_ssh_keys_exist
 from ssh_key_helper import should_ask_password
 from time import sleep
+from pathlib import Path
 import logging
 import getpass
 import paramiko
@@ -30,6 +31,21 @@ def setup_ssh_session_args(args):
                         check_home_ssh_keys
                         )
     return ssh_session_args
+
+
+def is_host_unknown(ssh_session, remote_host):
+    """ Check if a host is missing from known_hosts file """
+    is_host_unknown = False
+    home_dir = Path.home()
+    ssh_config_dir = Path(".ssh/")
+    ssh_keys_default_dir = Path(home_dir, ssh_config_dir)
+    known_hosts_file = ssh_keys_default_dir / 'known_hosts'
+    ssh_session.load_host_keys(known_hosts_file)
+    host_keys = ssh_session.get_host_keys()
+    hostkey_check = host_keys.lookup(remote_host)
+    if hostkey_check is None:
+        is_host_unknown = True
+    return is_host_unknown
 
 
 def start_ssh_session(ssh_session, remote_host, session_args):
