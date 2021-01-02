@@ -1,3 +1,5 @@
+#!/home/fulano/python_ssh-commander_v0.2/env/bin/python3
+
 # Copyright 2020 by Tuxedoar <tuxedoar@gmail.com>
 
 # LICENSE
@@ -68,12 +70,11 @@ def start_multithreaded_sessions(nworkers, target_hosts, ssh_session_args, cmd):
     with concurrent.futures.ThreadPoolExecutor(max_workers=nworkers) as executor:
         for target_host in target_hosts:
             executor.submit(
-                            manage_ssh_session,
-                            ssh_session_args,
-                            target_host,
-                            cmd
-                            )
-    return None
+                manage_ssh_session,
+                ssh_session_args,
+                target_host,
+                cmd
+                )
 
 
 def menu_handler():
@@ -86,7 +87,7 @@ def menu_handler():
                          executed on remote hosts')
     parser.add_argument('-p', '--port', nargs='?', type=int,
                         default=22, help='Specify SSH port to connect to hosts')
-    parser.add_argument('-i','--identity_file', help="Public key auth file")
+    parser.add_argument('-i', '--identity_file', help="Public key auth file")
     parser.add_argument('-T', '--trust_unknown', action='store_true', \
                         help="Trust hosts with missing local keys")
     parser.add_argument('-v', '--version', action='version',
