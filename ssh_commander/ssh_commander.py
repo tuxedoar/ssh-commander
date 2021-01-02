@@ -1,5 +1,3 @@
-#!/home/fulano/python_ssh-commander_v0.2/env/bin/python3
-
 # Copyright 2020 by Tuxedoar <tuxedoar@gmail.com>
 
 # LICENSE

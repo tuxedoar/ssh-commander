@@ -3,6 +3,7 @@
 from ssh_key_helper import check_ssh_keys_exist
 from ssh_key_helper import should_ask_password
 from time import sleep
+import sys
 from pathlib import Path
 import logging
 import getpass
@@ -10,6 +11,7 @@ import paramiko
 import itertools
 from socket import error
 from colorama import Fore
+
 
 def setup_ssh_session_args(args):
     """ Setup needed SSH session arguments """
@@ -28,7 +30,8 @@ def setup_ssh_session_args(args):
                         pw, \
                         args.port, \
                         ssh_key_file, \
-                        check_home_ssh_keys
+                        check_home_ssh_keys, \
+                        args.trust_unknown
                         )
     return ssh_session_args
 
@@ -61,15 +64,19 @@ def get_unknown_hosts(hosts):
 
 def start_ssh_session(ssh_session, remote_host, session_args):
     """ Initialize SSH session with remote host """
-    user, pw, port, ssh_key_file, check_home_ssh_keys = \
+    user, pw, port, ssh_key_file, check_home_ssh_keys, trust_unknown = \
                                     session_args[0], \
                                     session_args[1], \
                                     session_args[2], \
                                     session_args[3], \
-                                    session_args[4]
+                                    session_args[4], \
+                                    session_args[5]
 
     try:
-        ssh_session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        if trust_unknown:
+            # Add host keys automatically to internal 'known_hosts' when user
+            # chooses to trust hosts that are missing in ~/.ssh/known_hosts
+            ssh_session.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         if ssh_key_file is None and check_home_ssh_keys is not True:
             # Try password based auth!
             logging.info("[+] Trying password based auth for host: %s", remote_host)
