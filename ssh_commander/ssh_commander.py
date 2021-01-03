@@ -22,9 +22,9 @@ import logging
 import concurrent.futures
 import coloredlogs
 from colorama import init
-from ssh_session import get_unknown_hosts
-from ssh_session import setup_ssh_session_args
-from ssh_session import manage_ssh_session
+from ssh_commander.ssh_session import get_unknown_hosts
+from ssh_commander.ssh_session import setup_ssh_session_args
+from ssh_commander.ssh_session import manage_ssh_session
 from _version import __version__
 
 
