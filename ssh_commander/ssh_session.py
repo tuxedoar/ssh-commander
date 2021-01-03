@@ -9,8 +9,8 @@ import getpass
 import paramiko
 import itertools
 from colorama import Fore
-from ssh_key_helper import check_ssh_keys_exist
-from ssh_key_helper import should_ask_password
+from ssh_commander.ssh_key_helper import check_ssh_keys_exist
+from ssh_commander.ssh_key_helper import should_ask_password
 
 
 def setup_ssh_session_args(args):
