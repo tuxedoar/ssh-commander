@@ -1,4 +1,4 @@
-# Copyright 2020 by Tuxedoar <tuxedoar@gmail.com>
+# Copyright 2021 by Tuxedoar <tuxedoar@gmail.com>
 
 # LICENSE
 
