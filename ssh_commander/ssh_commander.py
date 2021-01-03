@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from ssh_session import get_unknown_hosts
-from ssh_session import setup_ssh_session_args
-from ssh_session import manage_ssh_session
 import argparse
 import sys
 import re
 import logging
 import concurrent.futures
 import coloredlogs
+from ssh_session import get_unknown_hosts
+from ssh_session import setup_ssh_session_args
+from ssh_session import manage_ssh_session
 from colorama import init
 from _version import __version__
 
