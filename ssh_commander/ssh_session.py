@@ -1,16 +1,16 @@
 """ Helper functions for handling SSH sessions  """
 
-from ssh_key_helper import check_ssh_keys_exist
-from ssh_key_helper import should_ask_password
+from pathlib import Path
+from socket import error
 from time import sleep
 import sys
-from pathlib import Path
 import logging
 import getpass
 import paramiko
 import itertools
-from socket import error
 from colorama import Fore
+from ssh_key_helper import check_ssh_keys_exist
+from ssh_key_helper import should_ask_password
 
 
 def setup_ssh_session_args(args):
@@ -93,9 +93,11 @@ def start_ssh_session(ssh_session, remote_host, session_args):
             IOError,
             error
             ) as e:
-                logging.critical("Failed to connect to host %s: %s",
-                                    remote_host, e)
-                sys.exit(1)
+        logging.critical("Failed to connect to host %s: %s", \
+        remote_host, \
+        e
+        )
+        sys.exit(1)
     return ssh_session
 
 
