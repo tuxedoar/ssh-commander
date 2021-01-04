@@ -12,6 +12,7 @@ setup(
     url='https://github.com/tuxedoar/ssh-commander',
     author='tuxedoar',
     author_email='tuxedoar@gmail.com',
+    license='GPLv3',
     packages=['ssh_commander'],
     python_requires='>=3.6',
     scripts=["ssh_commander/_version.py"],
