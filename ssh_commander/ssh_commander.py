@@ -89,7 +89,7 @@ def menu_handler():
                         default=22, help='Specify SSH port to connect to hosts')
     parser.add_argument('-i', '--identity_file', help="Public key auth file")
     parser.add_argument('-T', '--trust_unknown', action='store_true', \
-                        help="Trust hosts with missing local keys")
+                        help="Trust hosts with no entries at known_hosts file")
     parser.add_argument('-v', '--version', action='version',
                         version="%(prog)s {version}".format(version=__version__),
                         help='Show current version')
