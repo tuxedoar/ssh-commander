@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='ssh-commander',
-    version='0.2',
+    version='0.3',
     description='Excecute commands on several remote hosts, with SSH',
     long_description=long_description,
     long_description_content_type="text/markdown",
