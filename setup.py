@@ -14,7 +14,7 @@ setup(
     author_email='tuxedoar@gmail.com',
     license='GPLv3',
     packages=['ssh_commander'],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     scripts=["ssh_commander/_version.py"],
     entry_points={
         "console_scripts": [
