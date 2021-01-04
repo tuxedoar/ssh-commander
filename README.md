@@ -7,11 +7,11 @@ comma-separated list of commands to execute on those. Note that access credentia
 the target hosts!.
 
 ## Highlights and features
-* Key-based authentication support (>=v0.3)
-* Multithreaded sessions (>=v0.2).
+* Key-based authentication support (>= v0.3)
+* Multithreaded sessions (>= v0.2).
 * Almost no setup required, after installed!.
 * Easy to use CLI syntax.
-* Colorized output (>=v0.2)!.
+* Colorized output (>= v0.2)!.
 
 ## Requirements
 Make sure your system meets the following requirements:
@@ -110,6 +110,14 @@ ssh-commander hosts.txt root "terminal length 0, sh port-security"
 They could rather be some GNU/Linux servers, as well:
 ```
 ssh-commander hosts.txt foones "hostname, whoami"
+```
+Do not validate remote hosts against the `known_hosts` file:
+```
+ssh-commander -T hosts.txt foones "hostname, whoami"
+```
+Specify an alternative SSH *key file* location, for *key-based authentication*:
+```
+ssh-commander -i ~/ssh_keys/id_rsa hosts.txt foones "hostname, whoami"
 ```
 
 ## License
