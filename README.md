@@ -53,7 +53,8 @@ optional arguments:
 ### Setup your targeted hosts
 
 First, remember to create a text file (name it whatever you like), where you list the target hosts. Its content, may look like 
-this: ```
+this:
+```
 # This is a comment. It'll be ignored!.
 192.168.0.10
 192.168.0.11
