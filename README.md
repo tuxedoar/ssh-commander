@@ -68,10 +68,10 @@ Since `v0.3`, `ssh-commander` supports the following *authentication methods*:
 
 In this regard, `ssh-commander` tries to mimmick the [OpenSSH](https://www.openssh.com/)
 client default behaviour. In practical terms, this means that:
-* If any valid *key file* is found at `~/.ssh/`, it'll attempt a *key-based
-authentication* on all the targeted hosts!.
-* If no valid *key file* is found nor provided, you'll be asked for a
-* *password*, to be used as the *authentication method* for all remote hosts.
+* If any valid *key file* is found at `~/.ssh/`, it'll attempt a *key-based authentication* on all the targeted hosts!.
+* If no valid *key file* is found nor provided, you'll be asked for a *password*, to be used as the *authentication method* for 
+all remote hosts.
+
 In any case, both the *SSH key* or the provided *password*, should be valid on ALL
 the targeted hosts, for doing the authentication!.
 
