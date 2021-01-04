@@ -37,7 +37,9 @@ def main():
         args = menu_handler()
         target_hosts = read_hosts_file(args.FILE)
         if not target_hosts:
-            logging.critical("No valid hosts were found. Nothing to do!")
+            logging.critical(
+            "No valid hosts were found at: %s. Nothing to do!", args.FILE
+            )
             sys.exit(1)
         trust_unknown_hosts = args.trust_unknown
         # Check for unknown hosts only IF '-T' argument is NOT present!
