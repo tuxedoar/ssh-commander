@@ -7,11 +7,11 @@ comma-separated list of commands to execute on those. Note that access credentia
 the target hosts!.
 
 ## Highlights and features
-* Key-based authentication support (`>=v0.3`)
-* Multithreaded sessions (`>=v0.2`).
+* Key-based authentication support (>=v0.3)
+* Multithreaded sessions (>=v0.2).
 * Almost no setup required, after installed!.
 * Easy to use CLI syntax.
-* Colorized output (`>=v0.2`)!.
+* Colorized output (>=v0.2)!.
 
 ## Requirements
 Make sure your system meets the following requirements:
@@ -62,7 +62,7 @@ this:
 ```
 
 ### Authentication
-Since `v0.3`, `ssh-commander` supports the following *authentication methods*:
+Since v0.3, `ssh-commander` supports the following *authentication methods*:
 * Password-based authentication.
 * SSH key-based authentication.
 
@@ -81,7 +81,7 @@ A *password* is prompted ONLY if no previous valid *key file* was found, at defa
 should be valid on all targeted hosts!.
 
 #### SSH key-based authentication
-As explained previously, firstly, `ssh-commander` is gonna try a *key-based authentication*, by looking for valid *keys* at the 
+As explained previously, firstly, `ssh-commander` will try a *key-based authentication*, by looking for valid *keys* at the 
 `~/.ssh/` directory.
 
 The following types of keys are looked for:
