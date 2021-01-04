@@ -98,11 +98,11 @@ def start_ssh_session(ssh_session, remote_host, session_args):
             # Try password based auth!
             logging.info("[+] Trying password based auth for host: %s", remote_host)
             ssh_session.connect(remote_host, username=user, password=pw, port=port, \
-                                look_for_keys=False, allow_agent=False, timeout=10)
+                                look_for_keys=False, allow_agent=False, timeout=5)
         else:
             # Try key based auth
             logging.info("[+] Trying key based auth for host: %s", remote_host)
-            ssh_session.connect(remote_host, username=user, port=port, timeout=10, \
+            ssh_session.connect(remote_host, username=user, port=port, timeout=5, \
                                 key_filename=ssh_key_file)
     except (
             paramiko.ssh_exception.AuthenticationException,
