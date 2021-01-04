@@ -65,6 +65,7 @@ this:
 Since `v0.3`, `ssh-commander` supports the following *authentication methods*:
 * Password-based authentication.
 * SSH key-based authentication.
+
 In this regard, `ssh-commander` tries to mimmick the [OpenSSH](https://www.openssh.com/)
 client default behaviour. In practical terms, this means that:
 * If any valid *key file* is found at `~/.ssh/`, it'll attempt a *key-based
